@@ -16,17 +16,26 @@ public:
     
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);
+    
 
-    //static auto *jump;
     //auto jump;
     void update(float) override;
     //auto background;
 private:
 	//auto cocos2d::JumpBy* jump;
+	// cocos2d::Vector getAnimation(const char *format, int count);
+	cocos2d::Sprite* bird; 
+	cocos2d::Sprite* sprite;
+
 	cocos2d::Sprite* background;
 	cocos2d::Sprite* background2;
 	cocos2d::Sprite* background3;
 	cocos2d::Sprite* background4;
+
+	cocos2d::Size visibleSize;
+	cocos2d::Vec2 origin;
+	//float *coordinate;
+	//int a;
 	//static int runspeed=1;
 
 };

@@ -22,8 +22,8 @@ bool HelloWorld::init()
         return false;
     }
     
-    Size visibleSize = Director::getInstance()->getVisibleSize();
-    Vec2 origin = Director::getInstance()->getVisibleOrigin();
+    visibleSize = Director::getInstance()->getVisibleSize();
+    origin = Director::getInstance()->getVisibleOrigin();
 
     /////////////////////////////
     // 2. add a menu item with "X" image, which is clicked to quit the program
@@ -56,17 +56,23 @@ bool HelloWorld::init()
  //    this->addChild(label, 1);
 
     // add "HelloWorld" splash screen"
-    auto sprite = Sprite::create("man.png");
+    sprite = Sprite::create("man.png");
 
     // position the sprite on the center of the screen
-    sprite->setPosition(Vec2((visibleSize.width/2 + origin.x)*0.4, (visibleSize.height/2 + origin.y)*0.6));
+    sprite->setPosition(Vec2((visibleSize.width/2 + origin.x)*0.42, (visibleSize.height/2 + origin.y)*0.35));
     Vec2 pos = sprite->getContentSize();
     sprite->setScale(visibleSize.width/pos.x*0.25,visibleSize.height/pos.y*0.25);
     //CCLOG(visibleSize.width);
     // add the sprite as a child to this layer
     this->addChild(sprite, 2);
 
-    background = Sprite::create("road1.png");
+    bird = Sprite::create("bird.png");
+    bird->setPosition(Vec2((visibleSize.width/2 + origin.x)*0.4, (visibleSize.height/2 + origin.y)*1.4));
+    Vec2 birdpos = bird->getContentSize();
+    bird->setScale(visibleSize.width/pos.x*0.25,visibleSize.height/pos.y*0.25);
+    this->addChild(bird, 2);
+
+    background = Sprite::create("road");
 
     Vec2 pos2 = background->getContentSize();
     background->setPosition(Vec2(visibleSize.width/2 + origin.x,visibleSize.height/6 + origin.y));
@@ -74,7 +80,7 @@ bool HelloWorld::init()
     this->addChild(background, 1);
 
 
-    background2 = Sprite::create("road1.png");
+    background2 = Sprite::create("road");
 
     background2 ->setPosition(Vec2(visibleSize.width/2 + origin.x+visibleSize.width,visibleSize.height/6 + origin.y));
     background2->setScale(visibleSize.width/pos2.x,1);
@@ -96,12 +102,12 @@ bool HelloWorld::init()
     
         
     
-    
-    auto eventListener = EventListenerKeyboard::create();
+    //[start] keybord event
+auto eventListener = EventListenerKeyboard::create();
     eventListener->onKeyPressed = [=](EventKeyboard::KeyCode keyCode, Event* event){
 
         Vec2 loc = event->getCurrentTarget()->getPosition();
-       // jump = JumpBy::create(0.5, Vec2(0, 0), 100, 1);
+        // jump = JumpBy::create(0.5, Vec2(0, 0), 100, 1);
         switch(keyCode){
             case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
             case EventKeyboard::KeyCode::KEY_A:
@@ -109,10 +115,12 @@ bool HelloWorld::init()
                 break;
             case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
             case EventKeyboard::KeyCode::KEY_D:
+            case EventKeyboard::KeyCode::KEY_SPACE:
                 //event->getCurrentTarget()->setPosition(++loc.x,loc.y);
-
-                if(loc.y == event->getCurrentTarget()->getPosition().y)
-                    event->getCurrentTarget()->runAction(JumpBy::create(1, Vect(0,0),loc.y*1.5,1));
+                //coordinate*=loc.y;
+                //if(loc.y == coordinate*)
+                if(loc.y==((visibleSize.height/2 + origin.y)*0.35)||loc.y==((visibleSize.height/2 + origin.y)*0.6))
+                    event->getCurrentTarget()->runAction(JumpBy::create(1, Vect(0,0),visibleSize.height*0.25,1));
 
                 break;
             case EventKeyboard::KeyCode::KEY_UP_ARROW:
@@ -121,8 +129,11 @@ bool HelloWorld::init()
                 
     
                 //event->getCurrentTarget()->setPosition(loc.x,loc.y*0.07+loc.y);
+            if(loc.y==((visibleSize.height/2 + origin.y)*0.35))
+            {
                 event->getCurrentTarget()->setPosition(Vec2((visibleSize.width/2 + origin.x)*0.4, (visibleSize.height/2 + origin.y)*0.6));
-
+                sprite->setScale(visibleSize.width/pos.x*0.18,visibleSize.height/pos.y*0.18);
+            }
                 
 
 
@@ -130,14 +141,41 @@ bool HelloWorld::init()
             case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
             case EventKeyboard::KeyCode::KEY_S:
 
-                event->getCurrentTarget()->setPosition(Vec2((visibleSize.width/2 + origin.x)*0.45, (visibleSize.height/2 + origin.y)*0.35));
+            if(loc.y==((visibleSize.height/2 + origin.y)*0.6))
+            {
 
-                break;
+                event->getCurrentTarget()->setPosition(Vec2((visibleSize.width/2 + origin.x)*0.42, (visibleSize.height/2 + origin.y)*0.35));
+                sprite->setScale(visibleSize.width/pos.x*0.25,visibleSize.height/pos.y*0.25);
+            }
+            break;
         }
     };
 
     this->_eventDispatcher->addEventListenerWithSceneGraphPriority(eventListener,sprite);
+    //[end] keybord event
 
+     auto touchEvent = EventListenerTouchOneByOne::create();
+
+    touchEvent->onTouchBegan = [=](Touch* touch, Event* event)->bool
+    {
+        Vec2 loc = sprite->getPosition();
+        if(loc.y==((visibleSize.height/2 + origin.y)*0.35)||loc.y==((visibleSize.height/2 + origin.y)*0.6))
+            sprite->runAction(JumpBy::create(1, Vect(0,0),visibleSize.height*0.25,1));
+    };
+    this->_eventDispatcher->addEventListenerWithSceneGraphPriority(touchEvent, this);
+
+    // Vector<SpriteFrame*> animFrames(2);
+    // char str[100] = {0};
+    // for(int i = 1; i < 2; i++)
+    // {
+    //     sprintf(str, ".png",i);
+    //     auto frame = SpriteFrame::create(str,Rect(0,0,40,40)); //we assume that the sprites' dimentions are 40*40 rectangles.
+    //     animFrames.pushBack(frame);
+    // }
+
+    // auto animation = Animation::createWithSpriteFrames(animFrames, 0.2f);
+    // auto animate = Animate::create(animation);
+    // sprite->runAction(animate);
     this->scheduleUpdate();
     return true;
 }
@@ -157,20 +195,22 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
 }
 
 void HelloWorld::update(float delta){
+    Node::update(delta);
+
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
     Vec2 pos3 = background3->getPosition();
     Vec2 pos4 = background4->getPosition(); 
 
-    background3->setPosition(pos3.x-1, pos3.y);
-    background4->setPosition(pos4.x-1, pos4.y);
+    background3->setPosition(pos3.x-0.5, pos3.y);
+    background4->setPosition(pos4.x-0.5, pos4.y);
 
-    if(pos3.x==(-0.5)*visibleSize.width)
+    if(pos3.x==(-0.5)*visibleSize.width /*|| pos3.x==(-0.5)*visibleSize.width+0.5*/)
     {
         background3->setPosition(Vec2(visibleSize.width/2 + origin.x+visibleSize.width-1,visibleSize.height/2 + origin.y));
     }
-    else if(pos4.x==(-0.5)*visibleSize.width)
+    else if(pos4.x==(-0.5)*visibleSize.width /*|| pos4.x==(-0.5)*visibleSize.width+0.5*/)
     {
         background4->setPosition(Vec2(visibleSize.width/2 + origin.x+visibleSize.width-1,visibleSize.height/2 + origin.y));
     }
