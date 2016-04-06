@@ -5,13 +5,13 @@ USING_NS_CC;
 
 Scene* MainMenu::createScene()
 {
-    auto scene = Scene::create();// 'scene' is an autorelease object
+    auto sceneM = Scene::create();// 'scene' is an autorelease object
     
     auto layer = MainMenu::create();// 'layer' is an autorelease object
 
-    scene->addChild(layer);// add layer as a child to scene
+    sceneM->addChild(layer);// add layer as a child to scene
 
-    return scene;// return the scene
+    return sceneM;// return the scene
 }
 
 bool MainMenu::init()
@@ -49,7 +49,7 @@ bool MainMenu::init()
 
 // void MainMenu::GoToGameScene( cocos2d::Ref *sender )
 // {
-//     auto scene = GameScene::createScene();
+//     auto sceneM = GameScene::createScene();
     
-//     Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, scene ) );
+//     Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, sceneM ) );
 // }
