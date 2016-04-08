@@ -1,17 +1,18 @@
 #include "MainMenu.h"
 #include "HelloWorldScene.h"
+#define TRANSITION_TIME 1
 
 USING_NS_CC;
 
 Scene* MainMenu::createScene()
 {
-    auto sceneM = Scene::create();// 'scene' is an autorelease object
+    auto scene = Scene::create();// 'scene' is an autorelease object
     
     auto layer = MainMenu::create();// 'layer' is an autorelease object
 
-    sceneM->addChild(layer);// add layer as a child to scene
+    scene->addChild(layer);// add layer as a child to scene
 
-    return sceneM;// return the scene
+    return scene;// return the scene
 }
 
 bool MainMenu::init()
@@ -26,30 +27,34 @@ bool MainMenu::init()
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-    auto backgroundSprite = Sprite::create( "Background.png" );
+    auto backgroundSprite = Sprite::create( "Background.jpg" );
     backgroundSprite->setPosition( Point( visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y ) );
     
     this->addChild( backgroundSprite );
     
-    auto titleSprite = Sprite::create( "Title.png" );
-    titleSprite->setPosition( Point( visibleSize.width / 2 + origin.x, visibleSize.height - titleSprite->getContentSize( ).height ) );
+    // auto titleSprite = Sprite::create( "Title.png" );
+    // titleSprite->setPosition( Point( visibleSize.width / 2 + origin.x, visibleSize.height - titleSprite->getContentSize( ).height ) );
+    // titleSprite->setScale(2,2);
+
+    // this->addChild( titleSprite );
     
-    this->addChild( titleSprite );
+    auto playItem = MenuItemImage::create( "Title.png", "Titleselected.png", CC_CALLBACK_1( MainMenu::GoToHelloWorldScene, this ) );
+    playItem->setPosition( Point( visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y ) );
+    Vec2 sizeof1 = playItem->getContentSize();
+    playItem->setScale(visibleSize.width/sizeof1.x/2,visibleSize.height/sizeof1.y/1.5);
+
+
+    auto menu = Menu::create( playItem, NULL );
+    menu->setPosition( Point::ZERO );
     
-    // auto playItem = MenuItemImage::create( "Play Button.png", "Play Button Clicked.png", CC_CALLBACK_1( MainMenu::menuCloseCallback, this ) );
-    // playItem->setPosition( Point( visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y ) );
-    
-    // auto menu = Menu::create( playItem, NULL );
-    // menu->setPosition( Point::ZERO );
-    
-    // this->addChild( menu );
+    this->addChild( menu );
     
     return true;
 }
 
-// void MainMenu::GoToGameScene( cocos2d::Ref *sender )
-// {
-//     auto sceneM = GameScene::createScene();
+void MainMenu::GoToHelloWorldScene( cocos2d::Ref *sender )
+{
+    auto scene = HelloWorld::createScene();
     
-//     Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, sceneM ) );
-// }
+    Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, scene ) );
+}

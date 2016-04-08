@@ -2,12 +2,11 @@
 #define  _MAIN_MENU_H_
 
 #include "cocos2d.h"
+#include "HelloWorldScene.h"
 
 class MainMenu : public cocos2d::Layer
 {
 public:
-	MainMenu();
-	~MainMenu();
     static cocos2d::Scene* createScene();
 
     virtual bool init();
@@ -21,7 +20,7 @@ public:
 
     //void update(float) override;
 private:
-	//void GoToGameScene( cocos2d::Ref *sender );
+	void GoToHelloWorldScene( cocos2d::Ref *sender );
 };
 
 #endif // _MAIN_MENU_H_

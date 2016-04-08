@@ -24,7 +24,8 @@ public:
 private:
 	//auto cocos2d::JumpBy* jump;
 	// cocos2d::Vector getAnimation(const char *format, int count);
-	cocos2d::Sprite* bird; 
+	//cocos2d::Sprite* bird; 
+	//cocos2d::Vector getAnimation(const char *format,int count);
 	cocos2d::Sprite* sprite;
 
 	cocos2d::Sprite* background;

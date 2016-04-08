@@ -80,7 +80,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto sceneM = MainMenu::createScene();
 
     // run
-    director->runWithScene(scene);
+    director->runWithScene(sceneM);
 
     return true;
 }

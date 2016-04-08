@@ -25,6 +25,9 @@ bool HelloWorld::init()
     visibleSize = Director::getInstance()->getVisibleSize();
     origin = Director::getInstance()->getVisibleOrigin();
 
+    //cache animation
+    SpriteFrameCache::getInstance()->addSpriteFramesWithFile("res/manrun.plist");
+
     /////////////////////////////
     // 2. add a menu item with "X" image, which is clicked to quit the program
     //    you may modify it.
@@ -56,6 +59,8 @@ bool HelloWorld::init()
  //    this->addChild(label, 1);
 
     // add "HelloWorld" splash screen"
+    //Vector frames = getAnimation("res/manrun.png", 4);
+
     sprite = Sprite::create("man.png");
 
     // position the sprite on the center of the screen
@@ -66,24 +71,25 @@ bool HelloWorld::init()
     // add the sprite as a child to this layer
     this->addChild(sprite, 2);
 
-    bird = Sprite::create("bird.png");
-    bird->setPosition(Vec2((visibleSize.width/2 + origin.x)*0.4, (visibleSize.height/2 + origin.y)*1.4));
-    Vec2 birdpos = bird->getContentSize();
-    bird->setScale(visibleSize.width/pos.x*0.25,visibleSize.height/pos.y*0.25);
-    this->addChild(bird, 2);
+    // bird = Sprite::create("bird.png");
+    // bird->setPosition(Vec2((visibleSize.width/2 + origin.x)*0.4, (visibleSize.height/2 + origin.y)*1.4));
+    // Vec2 birdpos = bird->getContentSize();
+    // bird->setScale(visibleSize.width/pos.x*0.25,visibleSize.height/pos.y*0.25);
+    // this->addChild(bird, 2);
 
     background = Sprite::create("road");
 
     Vec2 pos2 = background->getContentSize();
     background->setPosition(Vec2(visibleSize.width/2 + origin.x,visibleSize.height/6 + origin.y));
-    background->setScale(visibleSize.width/pos2.x,1);
+    background->setScale(visibleSize.width/pos2.x,visibleSize.height/pos2.y/2.5);
     this->addChild(background, 1);
 
 
     background2 = Sprite::create("road");
 
+    Vec2 pos21 = background->getContentSize();
     background2 ->setPosition(Vec2(visibleSize.width/2 + origin.x+visibleSize.width,visibleSize.height/6 + origin.y));
-    background2->setScale(visibleSize.width/pos2.x,1);
+    background2->setScale(visibleSize.width/pos21.x,visibleSize.height/pos21.y/2.5);
     this->addChild(background2, 1);
 
     background3 = Sprite::create("texture.jpg");
@@ -229,4 +235,17 @@ void HelloWorld::update(float delta){
     {
         background2->setPosition(Vec2(visibleSize.width/2 + origin.x+visibleSize.width-2,visibleSize.height/6 + origin.y));
     }
-} 
+}
+
+// Vector HelloWorld::getAnimation(const char *format,int count)
+// {
+//     auto spritecache=SpriteFrameCache::getInstance();
+//     Vector animFrames;
+//     char str[100];
+//     for(int i=1;i<=count;i++)
+//     {
+//         sprintf(str, format, i);
+//         animFrames.pushBack(spritecache->getSpriteFrameByName(str));
+//     }
+//     return animFrames;
+// }
