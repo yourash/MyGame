@@ -27,16 +27,24 @@ private:
 	//cocos2d::Sprite* bird; 
 	//cocos2d::Vector getAnimation(const char *format,int count);
 	cocos2d::Sprite* sprite;
+	cocos2d::Sprite* manrun;
 
 	cocos2d::Sprite* background;
 	cocos2d::Sprite* background2;
 	cocos2d::Sprite* background3;
 	cocos2d::Sprite* background4;
+	cocos2d::Sprite* block1;
 
+	cocos2d::Sprite* bk1;
+	cocos2d::Sprite* bk2;
+	void scrollBk();
+
+	cocos2d::Label* scoreLabel;
 	cocos2d::Size visibleSize;
 	cocos2d::Vec2 origin;
+
 	//float *coordinate;
-	//int a;
+	int score;
 	//static int runspeed=1;
 
 };
