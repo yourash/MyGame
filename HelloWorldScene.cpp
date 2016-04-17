@@ -79,7 +79,7 @@ bool HelloWorld::init()
     Vec2 pos = sprite->getContentSize();
     sprite->setPosition(Vec2((visibleSize.width/5), (visibleSize.height/4)));
     sprite->setScale(visibleSize.width/pos.x*0.07,visibleSize.height/pos.y*0.18);
-    this->addChild(sprite, 4);
+    this->addChild(sprite, 3);
 
     sprite->runAction(RepeatForever::create(Animate::create(animation)));
 
@@ -333,7 +333,6 @@ void HelloWorld::update(float delta){
 
     // if(score%800==0)
     // block1->setPosition(Vec2(visibleSize.width/cocos2d::RandomHelper::random_int(2, 3)+visibleSize.width,(visibleSize.height/2)*0.35));
-
         score++;
         
         __String *tempScore = __String::createWithFormat( "%i", score );
@@ -395,10 +394,15 @@ void HelloWorld::scrollBk1()
         for(int i=0;i<traps.size();i++)
         {
             traps[i].returnBlock()->setPosition(traps[i].returnBlock()->getPosition().x-ROADSPEED, traps[i].returnBlock()->getPosition().y);
-            if( traps[i].returnBlock()->getPosition().x < 50)
+            if( traps[i].returnBlock()->getPosition().x < -visibleSize.width/2 /*|| (traps[i].returnBlock()->getPosition().x<traps[i-1].returnBlock()->getPosition().x+20)*/)
             {
                 traps[i].removeblock(traps[i].returnBlock());
                 traps.erase(traps.begin()+i);
+            }
+            Rect rect = sprite->getBoundingBox();
+            Rect rect1 = traps[i].returnBlock()->getBoundingBox();
+            if (rect.intersectsRect(rect1)) {
+                sprite->setPosition(Vec2(0,0));
             }
         }
 
