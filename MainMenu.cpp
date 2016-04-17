@@ -1,6 +1,6 @@
 #include "MainMenu.h"
 #include "HelloWorldScene.h"
-#define TRANSITION_TIME 1
+#include "definitions.h"
 
 USING_NS_CC;
 

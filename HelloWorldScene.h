@@ -2,6 +2,7 @@
 #define __HELLOWORLD_SCENE_H__
 
 #include "cocos2d.h"
+#include "block.h"
 
 
 class HelloWorld : public cocos2d::Layer
@@ -26,6 +27,7 @@ private:
 	// cocos2d::Vector getAnimation(const char *format, int count);
 	//cocos2d::Sprite* bird; 
 	//cocos2d::Vector getAnimation(const char *format,int count);
+	std::vector<block> traps;
 	cocos2d::Sprite* sprite;
 	cocos2d::Sprite* manrun;
 
@@ -34,10 +36,17 @@ private:
 	cocos2d::Sprite* background3;
 	cocos2d::Sprite* background4;
 	cocos2d::Sprite* block1;
+	cocos2d::Layer* layer1;
+
+	
 
 	cocos2d::Sprite* bk1;
 	cocos2d::Sprite* bk2;
+	cocos2d::Sprite* bkroad1;
+	cocos2d::Sprite* bkroad2;
 	void scrollBk();
+	void scrollBk1();
+	void trapCreate();
 
 	cocos2d::Label* scoreLabel;
 	cocos2d::Size visibleSize;

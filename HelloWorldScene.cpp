@@ -1,6 +1,6 @@
 #include "HelloWorldScene.h"
 
-#define SCORE_FONT_SIZE 0.1
+#include "definitions.h"
 
 USING_NS_CC;
 
@@ -25,6 +25,8 @@ bool HelloWorld::init()
         return false;
     }
     
+    //traps.reserve(10);
+
     visibleSize = Director::getInstance()->getVisibleSize();
     origin = Director::getInstance()->getVisibleOrigin();
 
@@ -84,14 +86,31 @@ bool HelloWorld::init()
     bk1 = Sprite::create("fon.png");
     bk1->setAnchorPoint( Vec2(0,0) );
     bk1->setPosition( Vec2(0,0) );
+    bk1->setScale(visibleSize.width/getContentSize().width*1.01,visibleSize.height/getContentSize().height);
+
 
     bk2 = Sprite::create("fon.png");
     bk2->setAnchorPoint( Vec2(0,0) );
-    bk2->setPosition( Vec2(bk1->getBoundingBox().size.width -1, 0) );
+    bk2->setPosition(Vec2(bk1->getBoundingBox().size.width -5, 0));
+    bk2->setScale(visibleSize.width/getContentSize().width*1.01,visibleSize.height/getContentSize().height);
 
-    // add the sprite as a child to this layer
     this->addChild(bk1, 0);
     this->addChild(bk2, 0); 
+
+    bkroad1 = Sprite::create("road1.png");
+    bkroad1->setAnchorPoint( Vec2(0,0) );
+    bkroad1->setPosition( Vec2(0,0) );
+    bkroad1->setScale(visibleSize.width/getContentSize().width*1.01,visibleSize.height/getContentSize().height/5);
+
+
+    bkroad2 = Sprite::create("road1.png");
+    bkroad2->setAnchorPoint( Vec2(0,0) );
+    bkroad2->setPosition(Vec2(bkroad1->getBoundingBox().size.width -1, 0));
+    bkroad2->setScale(visibleSize.width/getContentSize().width*1.01,visibleSize.height/getContentSize().height/5);
+
+    // add the sprite as a child to this layer
+    this->addChild(bkroad1, 1);
+    this->addChild(bkroad2, 1); 
 
     // add "HelloWorld" splash screen"
     //Vector frames = getAnimation("res/manrun.png", 4);
@@ -112,43 +131,43 @@ bool HelloWorld::init()
     // bird->setScale(visibleSize.width/pos.x*0.25,visibleSize.height/pos.y*0.25);
     // this->addChild(bird, 2);
 
-    background = Sprite::create("road");
+    // background = Sprite::create("road");
 
-    Vec2 pos2 = background->getContentSize();
-    background->setPosition(Vec2(visibleSize.width/2,visibleSize.height/9));
-    background->setScale(visibleSize.width/pos2.x,visibleSize.height/pos2.y/5);
-    this->addChild(background, 1);
+    // Vec2 pos2 = background->getContentSize();
+    // background->setPosition(Vec2(visibleSize.width/2,visibleSize.height/10));
+    // background->setScale(visibleSize.width/pos2.x,visibleSize.height/pos2.y/5);
+    // this->addChild(background, 1);
 
 
-    background2 = Sprite::create("road");
+    // background2 = Sprite::create("road");
 
-    Vec2 pos21 = background->getContentSize();
-    background2 ->setPosition(Vec2(visibleSize.width/2 +visibleSize.width,visibleSize.height/9));
-    background2->setScale(visibleSize.width/pos21.x,visibleSize.height/pos21.y/5);
-    this->addChild(background2, 1);
+    // Vec2 pos21 = background->getContentSize();
+    // background2 ->setPosition(Vec2(visibleSize.width/2 +visibleSize.width,visibleSize.height/10));
+    // background2->setScale(visibleSize.width/pos21.x,visibleSize.height/pos21.y/5);
+    // this->addChild(background2, 1);
 
-    background3 = Sprite::create("fon.png");
+    // background3 = Sprite::create("fon.png");
 
-    Vec2 pos3 = background3->getContentSize();
-    background3->setPosition(Vec2(visibleSize.width,visibleSize.height/2));
-    background3->setScale(visibleSize.width/pos3.x*2.01,visibleSize.height/pos3.y);
-    this->addChild(background3, 0);
+    // Vec2 pos3 = background3->getContentSize();
+    // background3->setPosition(Vec2(visibleSize.width,visibleSize.height/2));
+    // background3->setScale(visibleSize.width/pos3.x*2.01,visibleSize.height/pos3.y);
+    // this->addChild(background3, 0);
 
-    background4 = Sprite::create("fon.png");
+    // background4 = Sprite::create("fon.png");
 
-    Vec2 pos4 = background4->getContentSize();
-    background4->setPosition(Vec2(visibleSize.width*3,visibleSize.height/2));
-    background4->setScale(visibleSize.width/pos4.x*2.01,visibleSize.height/pos4.y);
-    this->addChild(background4, 0);
+    // Vec2 pos4 = background4->getContentSize();
+    // background4->setPosition(Vec2(visibleSize.width*3,visibleSize.height/2));
+    // background4->setScale(visibleSize.width/pos4.x*2.01,visibleSize.height/pos4.y);
+    // this->addChild(background4, 0);
   
     
 
-    block1 = Sprite::create("block.png");
+    // block1 = Sprite::create("block.png");
 
-    Vec2 sizeblock = block1->getContentSize();
-    //block1->setPosition(Vec2(visibleSize.width/cocos2d::RandomHelper::random_int(2, 3),visibleSize.height/2));
-    block1->setScale(visibleSize.width/sizeblock.x*0.25,visibleSize.height/sizeblock.y*0.25);
-    this->addChild(block1, 2);
+    // Vec2 sizeblock = block1->getContentSize();
+    // //block1->setPosition(Vec2(visibleSize.width/cocos2d::RandomHelper::random_int(2, 3),visibleSize.height/2));
+    // block1->setScale(visibleSize.width/sizeblock.x*0.25,visibleSize.height/sizeblock.y*0.25);
+    // this->addChild(block1, 2);
     
         
     
@@ -244,7 +263,11 @@ auto eventListener = EventListenerKeyboard::create();
     
     this->addChild( scoreLabel, 10000 );
 
+    layer1=this;
     this->schedule(cocos2d::SEL_SCHEDULE(&HelloWorld::scrollBk), 0.01f);
+    this->schedule(cocos2d::SEL_SCHEDULE(&HelloWorld::scrollBk1), 0.01f);
+    //some = new block(this);
+    this->schedule(cocos2d::SEL_SCHEDULE(&HelloWorld::trapCreate), 1.0f);
     this->scheduleUpdate();
 
     return true;
@@ -272,44 +295,44 @@ void HelloWorld::update(float delta){
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-    Vec2 pos3 = background3->getPosition();
-    Vec2 pos4 = background4->getPosition(); 
-    Vec2 posB = block1->getPosition(); 
-    Vec2 posM = sprite->getPosition();
+    // Vec2 pos3 = background3->getPosition();
+    // Vec2 pos4 = background4->getPosition(); 
+     //Vec2 posB = block1->getPosition(); 
+    // Vec2 posM = sprite->getPosition();
 
-    background4->setPosition(pos4.x-0.5, pos4.y);
-    background3->setPosition(pos3.x-0.5, pos3.y);
+    // background4->setPosition(pos4.x-0.5, pos4.y);
+    // background3->setPosition(pos3.x-0.5, pos3.y);
     
-    block1->setPosition(posB.x-2,posB.y);
+    //block1->setPosition(posB.x-4,posB.y);
 
-    if(pos3.x==(-1)*visibleSize.width /*|| pos3.x==(-0.5)*visibleSize.width+0.5*/)
-    {
-        background3->setPosition(Vec2(visibleSize.width*3-4,visibleSize.height/2));
-    }
-    else if(pos4.x==(-1)*visibleSize.width /*|| pos4.x==(-0.5)*visibleSize.width+0.5*/)
-    {
-        background4->setPosition(Vec2(visibleSize.width*3-4,visibleSize.height/2));
-    }
+    // if(pos3.x==(-1)*visibleSize.width /*|| pos3.x==(-0.5)*visibleSize.width+0.5*/)
+    // {
+    //     background3->setPosition(Vec2(visibleSize.width*3-4,visibleSize.height/2));
+    // }
+    // else if(pos4.x==(-1)*visibleSize.width /*|| pos4.x==(-0.5)*visibleSize.width+0.5*/)
+    // {
+    //     background4->setPosition(Vec2(visibleSize.width*3-4,visibleSize.height/2));
+    // }
 
-    Vec2 pos = background->getPosition();
-    Vec2 pos2 = background2->getPosition(); 
+    // Vec2 pos = background->getPosition();
+    // Vec2 pos2 = background2->getPosition(); 
 
 
-    background2->setPosition(pos2.x-2, pos2.y);
-    background->setPosition(pos.x-2, pos.y);
+    // background2->setPosition(pos2.x-4, pos2.y);
+    // background->setPosition(pos.x-4, pos.y);
     
 
-    if(pos.x==(-0.5)*visibleSize.width)
-    {
-        background->setPosition(Vec2(visibleSize.width/2+visibleSize.width-2,visibleSize.height/9));
-    }
-    else if(pos2.x==(-0.5)*visibleSize.width)
-    {
-        background2->setPosition(Vec2(visibleSize.width/2+visibleSize.width-2,visibleSize.height/9));
-    }
+    // if(pos.x==(-0.5)*visibleSize.width)
+    // {
+    //     background->setPosition(Vec2(visibleSize.width/2+visibleSize.width-2,visibleSize.height/10));
+    // }
+    // else if(pos2.x==(-0.5)*visibleSize.width)
+    // {
+    //     background2->setPosition(Vec2(visibleSize.width/2+visibleSize.width-2,visibleSize.height/10));
+    // }
 
-    if(score%800==0)
-    block1->setPosition(Vec2(visibleSize.width/cocos2d::RandomHelper::random_int(2, 3)+visibleSize.width,(visibleSize.height/2)*0.35));
+    // if(score%800==0)
+    // block1->setPosition(Vec2(visibleSize.width/cocos2d::RandomHelper::random_int(2, 3)+visibleSize.width,(visibleSize.height/2)*0.35));
 
         score++;
         
@@ -317,14 +340,16 @@ void HelloWorld::update(float delta){
         
         scoreLabel->setString( tempScore->getCString( ) );
 
-    if((posB.x<=posM.x+visibleSize.width/5) && (posB.y==posM.y+visibleSize.height/5))
-    {
-        score=score-10000;
+    // if((posB.x<=posM.x+visibleSize.width/5) && (posB.y==posM.y+visibleSize.height/5))
+    // {
+    //     score=score-10000;
         
-        __String *tempScore = __String::createWithFormat( "%i", score );
+    //     __String *tempScore = __String::createWithFormat( "%i", score );
         
-        scoreLabel->setString( tempScore->getCString() );
-    }
+    //     scoreLabel->setString( tempScore->getCString() );
+    // }
+
+       // some->returnBlock()->setPosition(0,0);
 
     Layer::update(delta);
 }
@@ -344,13 +369,43 @@ void HelloWorld::update(float delta){
 
 void HelloWorld::scrollBk()
 {
-    bk1->setPosition( Vec2(bk1->getPosition().x-1, bk1->getPosition().y) );
-    bk2->setPosition( Vec2(bk2->getPosition().x-1, bk2->getPosition().y) );
+    bk1->setPosition( Vec2(bk1->getPosition().x-BACKGROUNDSPEED, bk1->getPosition().y) );
+    bk2->setPosition( Vec2(bk2->getPosition().x-BACKGROUNDSPEED, bk2->getPosition().y) );
 
     if( bk1->getPosition().x < -bk1->getBoundingBox().size.width){
-        bk1->setPosition( Vec2( bk2->getPosition().x + bk2->getBoundingBox().size.width, bk1->getPosition().y));
+        bk1->setPosition( Vec2( bk2->getPosition().x + bk2->getBoundingBox().size.width-5, bk1->getPosition().y));
     }
     if( bk2->getPosition().x < -bk2->getBoundingBox().size.width){
-        bk2->setPosition( Vec2( bk1->getPosition().x + bk1->getBoundingBox().size.width, bk2->getPosition().y));
+        bk2->setPosition( Vec2( bk1->getPosition().x + bk1->getBoundingBox().size.width-5, bk2->getPosition().y));
    }
+}
+
+void HelloWorld::scrollBk1()
+{
+    bkroad1->setPosition( Vec2(bkroad1->getPosition().x-ROADSPEED, bkroad1->getPosition().y) );
+    bkroad2->setPosition( Vec2(bkroad2->getPosition().x-ROADSPEED, bkroad2->getPosition().y) );
+
+    if( bkroad1->getPosition().x < -bkroad1->getBoundingBox().size.width-1){
+        bkroad1->setPosition( Vec2( bkroad2->getPosition().x + bkroad2->getBoundingBox().size.width, bkroad1->getPosition().y));
+   }
+    if( bkroad2->getPosition().x < -bkroad2->getBoundingBox().size.width-1){
+        bkroad2->setPosition( Vec2( bkroad1->getPosition().x + bkroad1->getBoundingBox().size.width, bkroad2->getPosition().y));
+   }
+
+        for(int i=0;i<traps.size();i++)
+        {
+            traps[i].returnBlock()->setPosition(traps[i].returnBlock()->getPosition().x-ROADSPEED, traps[i].returnBlock()->getPosition().y);
+            if( traps[i].returnBlock()->getPosition().x < 50)
+            {
+                traps[i].removeblock(traps[i].returnBlock());
+                traps.erase(traps.begin()+i);
+            }
+        }
+
+}
+
+void HelloWorld::trapCreate()
+{
+    block trap1(layer1);
+    traps.insert(traps.end(), trap1);
 }
