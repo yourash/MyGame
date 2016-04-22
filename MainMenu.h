@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 #include "HelloWorldScene.h"
+#include "definitions.h"
 
 class MainMenu : public cocos2d::Layer
 {
@@ -21,6 +22,7 @@ public:
     //void update(float) override;
 private:
 	void GoToHelloWorldScene( cocos2d::Ref *sender );
+	void GoToHiddengame( cocos2d::Ref *sender );
 };
 
 #endif // _MAIN_MENU_H_

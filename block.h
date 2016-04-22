@@ -2,6 +2,7 @@
 #define  _BLOCK_H_
 
 #include "cocos2d.h"
+#include "definitions.h"
 //#include "HelloWorldScene.h"
 
 class block

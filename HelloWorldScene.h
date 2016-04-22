@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 #include "block.h"
+#include "definitions.h"
 
 
 class HelloWorld : public cocos2d::Layer
@@ -54,7 +55,11 @@ private:
 
 	//float *coordinate;
 	int score;
+	
+	void SetPhysicsWorld( cocos2d::PhysicsWorld *world ) { sceneWorld = world; };
+	cocos2d::PhysicsWorld *sceneWorld;
 	//static int runspeed=1;
+	void GoToGameOverScene( cocos2d::Ref *sender );
 
 };
 

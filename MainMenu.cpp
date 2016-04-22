@@ -1,6 +1,5 @@
 #include "MainMenu.h"
 #include "HelloWorldScene.h"
-#include "definitions.h"
 
 USING_NS_CC;
 
@@ -43,11 +42,21 @@ bool MainMenu::init()
     Vec2 sizeof1 = playItem->getContentSize();
     playItem->setScale(visibleSize.width/sizeof1.x/2,visibleSize.height/sizeof1.y/1.5);
 
+    auto playItem1 = MenuItemImage::create( "Title.png", "Titleselected.png", CC_CALLBACK_1( MainMenu::GoToHelloWorldScene, this ) );
+    playItem1->setPosition( Point( visibleSize.width/10, visibleSize.height / 20) );
+    Vec2 sizeof11 = playItem->getContentSize();
+    playItem1->setScale(visibleSize.width/sizeof11.x/8,visibleSize.height/sizeof11.y/8);
+
 
     auto menu = Menu::create( playItem, NULL );
     menu->setPosition( Point::ZERO );
-    
+
     this->addChild( menu );
+
+    auto menu1 = Menu::create( playItem1, NULL );
+    menu1->setPosition( Point::ZERO );
+    
+    this->addChild( menu1 );
     
     return true;
 }
@@ -58,3 +67,10 @@ void MainMenu::GoToHelloWorldScene( cocos2d::Ref *sender )
     
     Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, scene ) );
 }
+
+// void MainMenu::GoToHiddengame( cocos2d::Ref *sender )
+// {
+//     auto hiddenscene = GameScene::createScene();
+    
+//     Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, hiddenscene ) );
+// }
