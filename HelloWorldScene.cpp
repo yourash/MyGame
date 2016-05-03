@@ -1,5 +1,6 @@
 #include "HelloWorldScene.h"
 #include "GameOverScene.h"
+#include "flyblock.h"
 
 USING_NS_CC;
 
@@ -16,6 +17,9 @@ Scene* HelloWorld::createScene()
     return scene;
 }
 
+bool jump=false;
+//auto flycoin1= new Coin(this);
+
 // on "init" you need to initialize your instance
 bool HelloWorld::init()
 {
@@ -24,12 +28,8 @@ bool HelloWorld::init()
     {
         return false;
     }
-    
-    //traps.reserve(10);
     visibleSize = Director::getInstance()->getVisibleSize();
     origin = Director::getInstance()->getVisibleOrigin();
-    CCLOG('dfg');
-
    
     //cache animation
     SpriteFrameCache::getInstance()->addSpriteFramesWithFile("res/manrun1.plist");
@@ -59,57 +59,45 @@ bool HelloWorld::init()
     frames.pushBack(SpriteFrameCache::getInstance()->getSpriteFrameByName("7.png"));
     frames.pushBack(SpriteFrameCache::getInstance()->getSpriteFrameByName("8.png"));
     
-
-
     sprite = Sprite::createWithSpriteFrame(frames.front());
     auto animation = Animation::createWithSpriteFrames(frames, 1.0f/10);
     Vec2 pos = sprite->getContentSize();
-    sprite->setPosition(Vec2((visibleSize.width/5), (visibleSize.height/4)));
+    sprite->setPosition(Vec2((visibleSize.width/4), (visibleSize.height/4)));
     sprite->setScale(visibleSize.width/pos.x*MAN_WIDTH,visibleSize.height/pos.y*MAN_HEIGHT);
     this->addChild(sprite, 10);
 
     sprite->runAction(RepeatForever::create(Animate::create(animation)));
 
-    auto manBody = PhysicsBody::createBox( sprite->getContentSize(),PhysicsMaterial(0.0f, 1.0f, 1.0f) );
+    flyBlock(this);
+    coin= new flyBlock(this);
+
+
+
+    auto manBody = PhysicsBody::createBox( sprite->getContentSize()*0.8,PhysicsMaterial(0.0f, 0.0f, 0.0f) );
     manBody->setGravityEnable(true);
     manBody->setRotationEnable(false);
     manBody->setDynamic(true);
-    // manBody->setCollisionBitmask( 1);
-    // manBody->setContactTestBitmask( true );
-    
+
+    manBody->setContactTestBitmask( true );
+    manBody->setTag(1);
     sprite->setPhysicsBody( manBody );
+    
 
     auto line = Node::create();
     auto line_body = PhysicsBody::createEdgeSegment(Vec2(0,visibleSize.height/4-sprite->getBoundingBox().size.height/2.2),
                                                         Vec2(visibleSize.width*3,visibleSize.height/4-sprite->getBoundingBox().size.height/2.2),
-                                                        PhysicsMaterial(1000.0f, 0.0f, 1.0f));
+                                                        PhysicsMaterial(0.0f, 0.0f, 1.0f));
 
     line->setPhysicsBody(line_body);
+    line_body->setContactTestBitmask(true);
+    line_body->setTag(2);
     this->addChild(line);
-    // auto wall = Node::create();
-    // auto wallBody = PhysicsBody::createEdgeBox(visibleSize,PhysicsMaterial(1.0f, 1.0f, 1.0f));
-    // wall->setPhysicsBody(wallBody);
-    // wall->setPosition(Vec2(visibleSize.width/2,visibleSize.height/2));
-    // addChild(wall);
-
-    // bk1 = Sprite::create("fon.png");
-    // bk1->setAnchorPoint( Vec2(0,0) );
-    // bk1->setPosition( Vec2(0,0) );
-    // bk1->setScale(visibleSize.width/getContentSize().width*1.01,visibleSize.height/getContentSize().height);
-
-    // bk2 = Sprite::create("fon.png");
-    // bk2->setAnchorPoint( Vec2(0,0) );
-    // bk2->setPosition(Vec2(bk1->getBoundingBox().size.width -5, 0));
-    // bk2->setScale(visibleSize.width/getContentSize().width*1.01,visibleSize.height/getContentSize().height);
-
-    // this->addChild(bk1, 0);
-    // this->addChild(bk2, 0); 
+    
     bkroad1 = Sprite::create("inside.png");
     auto insidesize = bkroad1->getContentSize();
     bkroad1->setAnchorPoint( Vec2(0,0) );
     bkroad1->setPosition( Vec2(0,0) );
     bkroad1->setScale(visibleSize.width/insidesize.width*1.01,visibleSize.height/insidesize.height);
-
 
     bkroad2 = Sprite::create("inside.png");
 
@@ -120,6 +108,7 @@ bool HelloWorld::init()
     // add the sprite as a child to this layer
     this->addChild(bkroad1, 1);
     this->addChild(bkroad2, 1); 
+    
     
     //[start] keybord event
 auto eventListener = EventListenerKeyboard::create();
@@ -142,7 +131,7 @@ auto eventListener = EventListenerKeyboard::create();
                 {
                     //sprite->runAction(JumpBy::create(1, Vect(0,0),visibleSize.height*0.5,1));
                     //score++;
-                    sprite->getPhysicsBody()->applyImpulse(Vec2(0, 2000));
+                    sprite->getPhysicsBody()->applyImpulse(Vec2(0, 200000));
                 }
 
                 break;
@@ -174,23 +163,44 @@ auto eventListener = EventListenerKeyboard::create();
 
     this->_eventDispatcher->addEventListenerWithSceneGraphPriority(eventListener,sprite);
     //[end] keybord event
+    
+    
+    auto contactListener = EventListenerPhysicsContact::create();
+    contactListener->onContactBegin = [=](PhysicsContact &contact)->bool
+        {
+        PhysicsBody *a = contact.getShapeA()->getBody();
+        PhysicsBody *b = contact.getShapeB()->getBody();
 
-    auto touchEvent = EventListenerTouchOneByOne::create(); 
+        // if ((PLAYER_COLLISION_TAG == a->getCollisionBitmask() && OBSTACLE_COLLISION_TAG == b->getCollisionBitmask()) ||
+        // (PLAYER_COLLISION_TAG == b->getCollisionBitmask() && OBSTACLE_COLLISION_TAG == a->getCollisionBitmask()))
+        if((a->getTag()==1 && b->getTag()==2)||(b->getTag()==1 && a->getTag()==2))
+        {
 
-    touchEvent->onTouchBegan = [=](Touch* touch, Event* event)->bool
-    {
-        Vec2 loc = sprite->getPosition();
-        //if(loc.y==(visibleSize.height/5)||loc.y==(visibleSize.height/4))
-                {
-                    sprite->runAction(JumpBy::create(1, Vect(0,0),visibleSize.height*0.5,1));
-                    //score++;
-                }
+            jump=false;
+                
+
+        }
+        //else jump=true;
+        return true;
     };
-    this->_eventDispatcher->addEventListenerWithSceneGraphPriority(touchEvent, this);
+
+    this->_eventDispatcher->addEventListenerWithSceneGraphPriority(contactListener, this);
+
+    auto touchEvent = EventListenerTouchOneByOne::create();
+
+                touchEvent->onTouchBegan = [=](Touch* touch, Event* event)->bool
+                {
+                    if(!jump)
+                            {
+                                jump=true;
+                                sprite->getPhysicsBody()->applyImpulse(Vec2(0, 2000));
+                            }
+                };
+                this->_eventDispatcher->addEventListenerWithSceneGraphPriority(touchEvent, this);
 
     
     score = 0;
-    
+    //auto coin=new Coin(this);
     __String *tempScore = __String::createWithFormat( "%i", score );
     
     scoreLabel = Label::createWithTTF( tempScore->getCString( ), "fonts/Marker Felt.ttf", visibleSize.height * SCORE_FONT_SIZE );
@@ -200,10 +210,14 @@ auto eventListener = EventListenerKeyboard::create();
     this->addChild( scoreLabel, 10000 );
 
     layer1=this;
+    trapCreate();
     // this->schedule(cocos2d::SEL_SCHEDULE(&HelloWorld::scrollBk), 0.01f);
     this->schedule(cocos2d::SEL_SCHEDULE(&HelloWorld::scrollBk1), 0.01f);
-    //some = new block(this);
     this->schedule(cocos2d::SEL_SCHEDULE(&HelloWorld::trapCreate), 1.0f);
+    this->schedule(cocos2d::SEL_SCHEDULE(&HelloWorld::scroll), 0.01f);
+    
+    //this->schedule(cocos2d::SEL_SCHEDULE(&HelloWorld::coinCreate), 1.0f);
+
     this->scheduleUpdate();
 
     return true;
@@ -219,6 +233,11 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
 }
 
 void HelloWorld::update(float delta){
+
+    // if(jump==true)
+    // {
+    //     auto animation = Animation::createWithSpriteFrames(frames, 1.0f);
+    // }
     Node::update(delta);
 
     Size visibleSize = Director::getInstance()->getVisibleSize();
@@ -238,7 +257,7 @@ void HelloWorld::scrollBk1()
 {
     bkroad1->setPosition( Vec2(bkroad1->getPosition().x-ROADSPEED, bkroad1->getPosition().y) );
     bkroad2->setPosition( Vec2(bkroad2->getPosition().x-ROADSPEED, bkroad2->getPosition().y) );
-
+    
     if( bkroad1->getPosition().x < -bkroad1->getBoundingBox().size.width-1)
     {
         bkroad1->setPosition( Vec2( bkroad2->getPosition().x + bkroad2->getBoundingBox().size.width, bkroad1->getPosition().y));
@@ -252,17 +271,18 @@ void HelloWorld::scrollBk1()
         {
             traps[i].returnBlock()->setPosition(traps[i].returnBlock()->getPosition().x-ROADSPEED, traps[i].returnBlock()->getPosition().y);
             
-            if( traps[i].returnBlock()->getPosition().x < -visibleSize.width/2 /*|| (traps[i].returnBlock()->getPosition().x<traps[i-1].returnBlock()->getPosition().x+20)*/)
+            if( traps[i].returnBlock()->getPosition().x < -visibleSize.width/2 )
             {
                 traps[i].removeblock(traps[i].returnBlock());
                 traps.erase(traps.begin()+i);
             }
             Rect rect = sprite->getBoundingBox();
             Rect rect1 = traps[i].returnBlock()->getBoundingBox();
-            if (rect.intersectsRect(rect1)) {
-                //sprite->setPosition(Vec2(0,0));
-                //auto scene = GameOverScene::createScene();
-                //Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, scene ) );
+
+            if(sprite->getPosition().x<-50)
+            {
+                auto scene = GameOverScene::createScene();
+                Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, scene ) );
             }
         }
 }
@@ -277,4 +297,9 @@ void HelloWorld::GoToGameOverScene( cocos2d::Ref *sender )
 {
     auto scene = GameOverScene::createScene();
     Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, scene ) );
+}
+
+void HelloWorld::scroll()
+{
+    coin->returnflyblock()->setPosition(Vec2(coin->returnflyblock()->getPosition().x-ROADSPEED,coin->returnflyblock()->getPosition().y));
 }

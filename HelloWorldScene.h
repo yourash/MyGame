@@ -3,9 +3,10 @@
 
 #include "cocos2d.h"
 #include "block.h"
+#include "flyblock.h"
 #include "definitions.h"
 
-
+class flyBlock;
 class HelloWorld : public cocos2d::Layer
 {
 public:
@@ -24,27 +25,26 @@ public:
     void update(float) override;
     //auto background;
 private:
-	//auto cocos2d::JumpBy* jump;
-	// cocos2d::Vector getAnimation(const char *format, int count);
-	//cocos2d::Sprite* bird; 
-	//cocos2d::Vector getAnimation(const char *format,int count);
+
+	//flyBlock(this);
+    flyBlock *coin;
+    
 	std::vector<block> traps;
 	cocos2d::Sprite* sprite;
-	cocos2d::Sprite* manrun;
 
-	cocos2d::Sprite* background;
-	cocos2d::Sprite* background2;
-	cocos2d::Sprite* background3;
-	cocos2d::Sprite* background4;
 	cocos2d::Sprite* block1;
 	cocos2d::Layer* layer1;
+	cocos2d::Layer* layer21;
+	cocos2d::Sprite* animation;
 
-	
+	bool jump;
 
 	cocos2d::Sprite* bk1;
 	cocos2d::Sprite* bk2;
 	cocos2d::Sprite* bkroad1;
 	cocos2d::Sprite* bkroad2;
+
+	void scroll();
 	void scrollBk();
 	void scrollBk1();
 	void trapCreate();
@@ -53,12 +53,10 @@ private:
 	cocos2d::Size visibleSize;
 	cocos2d::Vec2 origin;
 
-	//float *coordinate;
 	int score;
 	
 	void SetPhysicsWorld( cocos2d::PhysicsWorld *world ) { sceneWorld = world; };
 	cocos2d::PhysicsWorld *sceneWorld;
-	//static int runspeed=1;
 	void GoToGameOverScene( cocos2d::Ref *sender );
 
 };
