@@ -28,9 +28,10 @@ private:
 
 	//flyBlock(this);
     flyBlock *coin;
-    
+
 	std::vector<block> traps;
 	cocos2d::Sprite* sprite;
+	cocos2d::Sprite* jumpsprite;
 
 	cocos2d::Sprite* block1;
 	cocos2d::Layer* layer1;
@@ -48,6 +49,7 @@ private:
 	void scrollBk();
 	void scrollBk1();
 	void trapCreate();
+	void spriteBoost();
 
 	cocos2d::Label* scoreLabel;
 	cocos2d::Size visibleSize;

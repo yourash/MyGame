@@ -81,6 +81,12 @@ bool HelloWorld::init()
     manBody->setContactTestBitmask( true );
     manBody->setTag(1);
     sprite->setPhysicsBody( manBody );
+
+
+    jumpsprite=Sprite::create("jump.png");
+    jumpsprite->setScale(visibleSize.width/pos.x*MAN_WIDTH,visibleSize.height/pos.y*MAN_HEIGHT);
+    jumpsprite->setVisible(false);
+    this->addChild(jumpsprite, 10);
     
 
     auto line = Node::create();
@@ -215,6 +221,7 @@ auto eventListener = EventListenerKeyboard::create();
     this->schedule(cocos2d::SEL_SCHEDULE(&HelloWorld::scrollBk1), 0.01f);
     this->schedule(cocos2d::SEL_SCHEDULE(&HelloWorld::trapCreate), 1.0f);
     this->schedule(cocos2d::SEL_SCHEDULE(&HelloWorld::scroll), 0.01f);
+    this->schedule(cocos2d::SEL_SCHEDULE(&HelloWorld::spriteBoost), 0.01f);
     
     //this->schedule(cocos2d::SEL_SCHEDULE(&HelloWorld::coinCreate), 1.0f);
 
@@ -234,14 +241,24 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
 
 void HelloWorld::update(float delta){
 
-    // if(jump==true)
-    // {
-    //     auto animation = Animation::createWithSpriteFrames(frames, 1.0f);
-    // }
+
     Node::update(delta);
 
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+    jumpsprite->setPosition(sprite->getPosition());
+
+    if(jump==true)
+    {
+        sprite->setVisible(false);
+        jumpsprite->setVisible(true);
+    }
+    else
+    { 
+        sprite->setVisible(true);
+        jumpsprite->setVisible(false);
+    }
 
     //VibleSize.width/cocos2d::RandomHelper::random_int(2, 3)+visibleSize.width,(visibleSize.height/2)*0.35));
         score++;
@@ -276,9 +293,7 @@ void HelloWorld::scrollBk1()
                 traps[i].removeblock(traps[i].returnBlock());
                 traps.erase(traps.begin()+i);
             }
-            Rect rect = sprite->getBoundingBox();
-            Rect rect1 = traps[i].returnBlock()->getBoundingBox();
-
+            
             if(sprite->getPosition().x<-50)
             {
                 auto scene = GameOverScene::createScene();
@@ -302,4 +317,18 @@ void HelloWorld::GoToGameOverScene( cocos2d::Ref *sender )
 void HelloWorld::scroll()
 {
     coin->returnflyblock()->setPosition(Vec2(coin->returnflyblock()->getPosition().x-ROADSPEED,coin->returnflyblock()->getPosition().y));
+}
+
+bool boost=false;
+
+void HelloWorld::spriteBoost()
+{
+    Rect rectsprite = sprite->getBoundingBox();
+    Rect rectcoin = coin->returnflyblock()->getBoundingBox();
+    if (rectcoin.intersectsRect(rectsprite))
+        boost=true;
+    if(boost)
+        sprite->setPosition(Vec2(sprite->getPosition().x+ROADSPEED,sprite->getPosition().y));
+    if(sprite->getPosition().x>visibleSize.width/2-1)
+        boost=false;
 }
