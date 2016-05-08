@@ -29,6 +29,7 @@ private:
 	//flyBlock(this);
     flyBlock *coin;
 
+    //cocos2d::PhysicsBody manBody;
 	std::vector<block> traps;
 	cocos2d::Sprite* sprite;
 	cocos2d::Sprite* jumpsprite;
@@ -50,6 +51,7 @@ private:
 	void scrollBk1();
 	void trapCreate();
 	void spriteBoost();
+	void spriteBoostStart();
 
 	cocos2d::Label* scoreLabel;
 	cocos2d::Size visibleSize;

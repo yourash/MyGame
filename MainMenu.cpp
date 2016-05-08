@@ -37,10 +37,10 @@ bool MainMenu::init()
 
     // this->addChild( titleSprite );
     
-    auto playItem = MenuItemImage::create( "Title.png", "Titleselected.png", CC_CALLBACK_1( MainMenu::GoToHelloWorldScene, this ) );
+    auto playItem = MenuItemImage::create( "play.png", "playpressed.png", CC_CALLBACK_1( MainMenu::GoToHelloWorldScene, this ) );
     playItem->setPosition( Point( visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y ) );
     Vec2 sizeof1 = playItem->getContentSize();
-    playItem->setScale(visibleSize.width/sizeof1.x/2,visibleSize.height/sizeof1.y/1.5);
+    playItem->setScale(visibleSize.width/sizeof1.x/2/1.3/2,visibleSize.height/sizeof1.y/1.5/2);
 
     auto playItem1 = MenuItemImage::create( "Title.png", "Titleselected.png", CC_CALLBACK_1( MainMenu::GoToHelloWorldScene, this ) );
     playItem1->setPosition( Point( visibleSize.width/10, visibleSize.height / 20) );

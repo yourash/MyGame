@@ -13,12 +13,15 @@ Scene* HelloWorld::createScene()
     auto gravity = Vec2(0, -5000);
     world->setGravity(gravity);
     //world->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
-    
     return scene;
 }
 
+bool boost=false;
+int boost_can=0;
+bool getcoin=false;
+
+
 bool jump=false;
-//auto flycoin1= new Coin(this);
 
 // on "init" you need to initialize your instance
 bool HelloWorld::init()
@@ -45,6 +48,17 @@ bool HelloWorld::init()
      auto menu = Menu::create(closeItem, NULL);
      menu->setPosition(Vec2::ZERO);
      this->addChild(menu, 2);
+
+     auto boostItem = MenuItemImage::create("bbutton.png","bbutton.png",CC_CALLBACK_0(HelloWorld::spriteBoostStart, this));
+    
+     boostItem->setPosition(Vec2(visibleSize.width*0.8,visibleSize.height*0.8));
+     Vec2 boostItemSize = boostItem->getContentSize();
+     boostItem->setScale((visibleSize.width/boostItemSize.x*0.1,visibleSize.height/boostItemSize.y*0.15));
+
+     // create menu, it's an autorelease object
+     auto boostButton = Menu::create(boostItem, NULL);
+     boostButton->setPosition(Vec2::ZERO);
+     this->addChild(boostButton, 2);
 
     //cache anim
     SpriteFrameCache::getInstance()->addSpriteFramesWithFile("res/manrun.plist");
@@ -194,15 +208,15 @@ auto eventListener = EventListenerKeyboard::create();
 
     auto touchEvent = EventListenerTouchOneByOne::create();
 
-                touchEvent->onTouchBegan = [=](Touch* touch, Event* event)->bool
-                {
-                    if(!jump)
-                            {
-                                jump=true;
-                                sprite->getPhysicsBody()->applyImpulse(Vec2(0, 2000));
-                            }
-                };
-                this->_eventDispatcher->addEventListenerWithSceneGraphPriority(touchEvent, this);
+        touchEvent->onTouchBegan = [=](Touch* touch, Event* event)->bool
+        {
+            if(!jump)
+            {
+                jump=true;
+                sprite->getPhysicsBody()->applyImpulse(Vec2(0, 2000));
+            }
+        };
+    this->_eventDispatcher->addEventListenerWithSceneGraphPriority(touchEvent, this);
 
     
     score = 0;
@@ -296,7 +310,7 @@ void HelloWorld::scrollBk1()
             
             if(sprite->getPosition().x<-50)
             {
-                auto scene = GameOverScene::createScene();
+                auto scene = GameOverScene::createScene(score);
                 Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, scene ) );
             }
         }
@@ -308,27 +322,41 @@ void HelloWorld::trapCreate()
     traps.insert(traps.end(), trap1);
 }
 
-void HelloWorld::GoToGameOverScene( cocos2d::Ref *sender )
-{
-    auto scene = GameOverScene::createScene();
-    Director::getInstance( )->replaceScene( TransitionFade::create( TRANSITION_TIME, scene ) );
-}
-
 void HelloWorld::scroll()
 {
     coin->returnflyblock()->setPosition(Vec2(coin->returnflyblock()->getPosition().x-ROADSPEED,coin->returnflyblock()->getPosition().y));
+    if(coin->returnflyblock()->getPosition().x<-(visibleSize.width/4))
+    {
+        coin->returnflyblock()->setPosition((visibleSize.width*(float)cocos2d::RandomHelper::random_int(1,3))+visibleSize.width,(visibleSize.height*0.7));
+        coin->returnflyblock()->setVisible(true);
+        getcoin=false;
+    }
 }
-
-bool boost=false;
 
 void HelloWorld::spriteBoost()
 {
     Rect rectsprite = sprite->getBoundingBox();
     Rect rectcoin = coin->returnflyblock()->getBoundingBox();
-    if (rectcoin.intersectsRect(rectsprite))
-        boost=true;
+    if (rectcoin.intersectsRect(rectsprite)&&!getcoin)
+    {
+        boost_can++;
+        coin->returnflyblock()->setVisible(false);
+        getcoin=true;
+    }
     if(boost)
         sprite->setPosition(Vec2(sprite->getPosition().x+ROADSPEED,sprite->getPosition().y));
     if(sprite->getPosition().x>visibleSize.width/2-1)
+    {
         boost=false;
+    }
+
+}
+
+void HelloWorld::spriteBoostStart()
+{
+    if(boost_can>0)
+    {
+        boost=true;
+        boost_can--;
+    }
 }
